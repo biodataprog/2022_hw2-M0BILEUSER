@@ -1,32 +1,31 @@
-#!/bin/bash -l
+#!/usr/bin/bash -l
+git clone https://github.com/biodataprog/2022_hw2-M0BILEUSER.git #downloaded file
 
-# step to write
-# download the CSV file
-# curl -o calfire.csv ...
+cut -d, -f2 calfires_2021.csv | sort -n #Print out the range of years that occur in this file (2017, 2018, 2019, 2020, 2021)
 
-# print out the range of years found -- you may need to go in and edit the file
-# cut -d, ....
-MINYEAR=1900
-MAXYEAR=1901
-# write code to set these variables with the smallest and largest years
-echo "This report has the years: $MINYEAR-$MAXYEAR"
-# if you have problems the CSV file already part of this repository so you can use 'calfires_2021.csv'
+cut -d, -f2 calfires_2021.csv | sort -n | tail -n +2 | wc -l #gives you number of fires in the database (134)
 
-# print out the total number of fires (remember to remove the header line)
-TOTALFILECOUNT=0
-# put your code here to update this variable
-echo "Total number of files: $TOTALFILECOUNT"
+awk -F, '{print $13,$6}' calfires_2021.csv | sort -n | tail -n 1 #gives you the name of the largest fire acre (1032699.6 AUGUEST COMPLEX)
 
-# print out the number of fire in each year
-echo "Number of fires in each year follows:"
+cut -d, -f2 calfires_2021.csv | sort -n | uniq -c | tail -n 5 #print out the number of fires that occur each year (39 in 2017, 21 in 2018, 11 in 2019, 44 in 2020, 19 in 2021)
 
+#Print out the total acreage burned in each year.
 
-# print out the name of the largest file use the GIS_ACRES and report the number of acres
-echo "Largest fire was $LARGEST and burned $LARGESTACRES"
+cut -d, -f2,13 calfires_2021.csv > total.csv
 
-# print out the years - change the code in $(echo 1990) to print out the years (hint - how did you get MINYEAR and MAXYEAR?
-for YEAR in $(echo 1990)
-do
-#      TOTAL=$(grep ... | awk ...)
+#I went into the file and further cleaning the data by deleting the letters
+
+#shell script name is total.sh
+
+for YEAR in 2017 2018 2019 2020 2021
+   do
+      TOTAL=$(grep $YEAR total.csv | awk -F',' '{sum+=$2;} END{print sum;}')
       echo "In Year $YEAR, Total was $TOTAL"
-done
+   done
+
+bash total.sh
+#In Year 2017, Total was 1.20042e+06
+#In Year 2018, Total was 1.48253e+06
+#In Year 2019, Total was 207643
+#In Year 2020, Total was 4.10884e+06
+#In Year 2021, Total was 2.1875e+06
